@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+    crm_service_mongo:
+        image: bitnami/mongodb
+        restart: unless-stopped
+        environment:
+            - MONGODB_USERNAME=mongo
+            - MONGODB_PASSWORD=mongo
+            - MONGODB_DATABASE=crm-service-dev
+            - ALLOW_EMPTY_PASSWORD=yes
+            - MONGODB_ROOT_PASSWORD=mongo
+        volumes:
+            - ./.docker/crm_service_mongo:/data/db
+        ports:
+            - "27017:27017"
+        networks:
+            - crm_service_network
+    crm_service:
+        container_name: crm_service
+        build:
+            context: .
+            target: dev
+        restart: unless-stopped
+        volumes:
+            - ./src:/usr/src/app/src:rw
+        ports:
+            - "3333:3333"
+        environment:
+            - PORT=3333
+            - MONGO_URI=mongodb://root:mongo@crm_service_mongo:27017/crm-service-dev?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false
+        networks:
+            - crm_service_network
+networks:
+  crm_service_network:
+    driver: bridge
