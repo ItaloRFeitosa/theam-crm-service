@@ -23,10 +23,11 @@ const server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-db.createConnection().then(() => server.listen(port));
 
 server.on("error", onError);
 server.on("listening", onListening);
+
+db.createConnection().then(() => server.listen(port));
 
 /**
  * Graceful Shutdown
