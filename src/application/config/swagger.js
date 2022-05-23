@@ -1,5 +1,5 @@
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("../../../swagger.json");
+const swaggerDocument = require("../../../docs/swagger.json");
 const { ENABLE_SWAGGER } = require("./constants");
 
 const setupSwagger = (app) => {
