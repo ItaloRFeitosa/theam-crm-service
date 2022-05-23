@@ -1,7 +1,7 @@
 const { Result } = require("#core/result");
 const {
   CustomerAlreadyExistsError,
-  CustomerNotExistsError,
+  CustomerNotFound,
 } = require("./customer-error");
 
 const CreateCustomer =
@@ -14,45 +14,47 @@ const CreateCustomer =
   };
 
 const UpdateCustomer =
-  ({ customerRepository }) =>
+  ({ customerRepository, photoProvider }) =>
   async (customerId, updateCustomerDTO) => {
     const exists = await customerRepository.existsById(customerId);
-    if (!exists) return Result.fail(CustomerNotExistsError.error(customerId));
+    if (!exists) return Result.fail(CustomerNotFound.error(customerId));
     const customerUpdated = await customerRepository.updateById(customerId, updateCustomerDTO);
-    return Result.ok(customerUpdated);
+    const customerWithSignedPhoto = await photoProvider.signPhoto(customerUpdated)
+    return Result.ok(customerWithSignedPhoto);
   };
 
 const DeleteCustomer =
   ({ customerRepository }) =>
   async (customerId, deletedBy) => {
     const exists = await customerRepository.existsById(customerId);
-    if (!exists) return Result.fail(CustomerNotExistsError.error(customerId));
+    if (!exists) return Result.fail(CustomerNotFound.error(customerId));
     await customerRepository.deleteById(customerId, deletedBy);
     return Result.ok();
   };
 
 const RetrieveCustomer =
-  ({ customerRepository }) =>
+  ({ customerRepository, photoProvider }) =>
   async (customerId) => {
-    const exists = await customerRepository.existsById(customerId);
-    if (!exists) return Result.fail(CustomerNotExistsError.error(customerId));
     const customerFound = await customerRepository.findById(customerId);
-    return Result.ok(customerFound);
+    if (!customerFound) return Result.fail(CustomerNotFound.error(customerId));
+    const customerWithSignedPhoto = await photoProvider.signPhoto(customerFound)
+    return Result.ok(customerWithSignedPhoto);
   };
 
 const ListCustomers =
-  ({ customerRepository }) =>
+  ({ customerRepository, photoProvider }) =>
   async (query) => {
     const customers = await customerRepository.find(query);
-    return Result.ok(customers);
+    const customersWithSignedPhoto = await Promise.all(customers.map(photoProvider.signPhoto))
+    return Result.ok(customersWithSignedPhoto);
   };
 
 const UploadCustomerPhoto =
   ({ customerRepository, photoProvider }) =>
-  async (customerId, photoMetadata) => {
+  async (customerId, { extension }) => {
     const exists = await customerRepository.existsById(customerId);
-    if (!exists) return Result.fail(CustomerNotExistsError.error(customerId));
-    const photo = await photoProvider.createPhoto(customerId, photoMetadata);
+    if (!exists) return Result.fail(CustomerNotFound.error(customerId));
+    const photo = await photoProvider.putPhoto({customerId, extension});
     await customerRepository.updatePhoto(customerId, photo);
     return Result.ok(photo);
   };

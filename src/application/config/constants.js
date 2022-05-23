@@ -11,7 +11,8 @@ const resolveBoolean = (value = "", defaultValue) => {
 }
 
 module.exports = {
-  STAGE: process.env.NODE_ENV,
+  STAGE: process.env.NODE_ENV || "development",
   ENABLE_SWAGGER: resolveBoolean(process.env.ENABLE_SWAGGER, true),
-  MONGO_URI: process.env.MONGO_URI
+  MONGO_URI: process.env.MONGO_URI,
+  CUSTOMERS_BUCKET_NAME: process.env.CUSTOMERS_BUCKET_NAME || "crm-customers-bucket"
 }

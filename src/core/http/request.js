@@ -5,6 +5,7 @@ const Request = (props) => ({
   query: props.query,
   params: props.params,
   user: props.user,
+  path: props.path
 })
 
 module.exports = { Request }

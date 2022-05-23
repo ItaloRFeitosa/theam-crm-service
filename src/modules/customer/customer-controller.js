@@ -51,13 +51,18 @@ const ListCustomersController =
   async (request) => {
     const query = ListCustomersQuery(request);
     const result = await customerService.list(query);
-    return Response.ok(result);
+    return Response.ok(result)
   };
 
 const UploadCustomerPhotoController =
   ({ customerService }) =>
   async (request) => {
-    return Response.ok({data: { message: "not implemented" }});
+    const { customerId } = request.params;
+    const result = await customerService.uploadPhoto(customerId, request.body);
+    if (result.isError) {
+      return Response.notFound(result);
+    }
+    return Response.ok(result);
   };
 
 const CustomerController = (deps) => ({

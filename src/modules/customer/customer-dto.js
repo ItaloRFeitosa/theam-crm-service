@@ -18,8 +18,8 @@ const DeleteCustomerDTO = ({ user, params }) => ({
 });
 
 const ListCustomersQuery = ({ query }) => ({
-  page: query.page || 1,
-  limit: query.limit || 50,
+  page: Number(query.page) || 1,
+  limit: Number(query.limit) || 50,
   search: query.search,
 });
 
