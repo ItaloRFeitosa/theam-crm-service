@@ -18,7 +18,6 @@ connection.on("disconnected", () => console.info("disconnected to mongodb"))
 const isConnected = () => connection.readyState === 1;
 
 const createConnection = (uri = mongoUri) => {
-  console.log(mongoUri)
   return connect(uri);
 };
 

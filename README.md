@@ -30,7 +30,7 @@ This module is responsible to manage auth related features, such as:
 
 # How to Install
 
-Built with NodeJS v16.15.0 and npm v8.5.5 to build the apps. You need Docker, Docker-compose and Makefile available in your machine. Then, you only need to clone the repo and run `make infra`. This command will setup docker containers related to the api, mongodb instance, and minio instance. After this, you can hit the following url:  `http://localhost:3333/health-check`. 
+Built with NodeJS v16.15.0 and npm v8.5.5 to build the apps. You need Docker, Docker-compose and Makefile available in your machine. Then, you only need to clone the repo and run `make infra`. This command will setup docker containers related to the api, mongodb instance, minio instance, and an admin user: email:`root@root.com` , password:`rootadmin`. After this, you can hit the following url:  `http://localhost:3333/health-check`. 
 
 if return a successful message, you are ready to go.
 
@@ -54,7 +54,7 @@ To upload customer image, you use the signedUrl received from `PATCH /customers/
 
 # How to Run Tests
 
-Work in progress
+Until now, Only auth routes have been covered with integration tests. You can run it with `npm run test:integration`
 
 # How to Deploy
 
